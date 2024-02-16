@@ -241,7 +241,16 @@ int main(void)
     *
     * Those last 2 lines are why we use vertex arrays; it binds the attribute layout to the vertex buffer
     * Also, in the core OpenGL, Vertex arrays are a requirement
+    * 
+    * With VAO, you don't need to bind the buffer, or redefine the attribute pointer, or enable the attribute pointer
+    *    GLCall(glBindVertexArray(vao))
+    * 
+    * How does it connect?
+    * When you bind the buffer (both of them! vertex and index),
+    *   and when you create the attribute pointer,
+    *   it does those operations to the currently bound VAO
     */
+
 
 
 
