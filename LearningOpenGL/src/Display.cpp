@@ -32,16 +32,29 @@ Display::Display()
     glfwSwapInterval(1);    // Synchronize frame updates with V sync
 }
 
+
 Display::~Display()
 {
     glfwTerminate();
+    /* Because this object should be created first, it will be destroyed last.
+     * This way, this method is called after the OpenGL objects are destroyed.
+     */
 }
 
+/*
+ * Indicates if the window should close.
+ * Returns false until the window is closed.
+ */
 bool Display::WindowShouldClose()
 {
     return glfwWindowShouldClose(m_Window);
 }
 
+/*
+ * Calls window functions that occur at the end of a frame.
+ *  - Swaps the buffers to display the frame
+ *  - Polls for events (like closing the window)
+ */
 void Display::EndFrame()
 {
     /* Swap front and back buffers */

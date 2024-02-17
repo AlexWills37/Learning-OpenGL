@@ -1,5 +1,10 @@
 #pragma once
-
+/*
+ * IndexBuffer.h
+ * Manages an OpenGL Index Buffer.
+ * The index buffer specifies how the vertices (from the currentlty bound VAO)
+ * are grouped into primitives.
+ */
 class IndexBuffer
 {
 private:

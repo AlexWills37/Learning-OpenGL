@@ -3,7 +3,15 @@
 #include <GL/glew.h>
 #include "GLErrorManager.h"
 #include <stdexcept>
+/*
+ * VertexBufferLayout.h
+ * Contains the necessary information to define a layout for the vertices.
+ */
 
+/*
+ * VertexBufferAttribute
+ * Defines a single attribute of a vertex
+ */
 struct VertexBufferAttribute
 {
 	unsigned int type;
@@ -26,7 +34,14 @@ struct VertexBufferAttribute
 	}
 };
 
-
+/*
+ * VertexBufferLayout
+ * Defines what a vertex is structured as, with a vector of Attributes.
+ * 
+ * Usage:
+ *		Call Push<type>(count) to add an attribute to the layout.
+ *		The attributes should be added in the order they appear in the vertex data
+ */
 class VertexBufferLayout
 {
 private:
@@ -61,7 +76,7 @@ public:
 	void Push<unsigned char>(unsigned int count)
 	{
 		m_Attributes.push_back({ GL_UNSIGNED_BYTE, count, GL_FALSE });
-		m_Stride == count * VertexBufferAttribute::GetSizeOfType(GL_UNSIGNED_BYTE);
+		m_Stride += count * VertexBufferAttribute::GetSizeOfType(GL_UNSIGNED_BYTE);
 	}
 
 	inline const std::vector<VertexBufferAttribute>& GetAttributes() const{ return m_Attributes; }

@@ -1,6 +1,7 @@
 #pragma once
 
 /*
+ * VertexBuffer
  * Contains the vertex information.
  */
 class VertexBuffer
