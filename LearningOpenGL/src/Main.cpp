@@ -6,40 +6,11 @@
 #include <string>
 #include <sstream>
 
-// Macro for error checking
-// Wrap OpenGL functions in GLCall() to detect errors from GL Calls
-// In modern versions of OpenGL, there is a debug callback function that can do this
-#define ASSERT(x) if (!(x)) __debugbreak();
-#define GLCall(x) GLClearError();\
-    x;\
-    ASSERT(GLLogCall(#x, __FILE__, __LINE__))
-
-/*
-* Open GL tutorial, following along with The Cherno's OpenGL tutorial series.
-* Tutorial link: https://youtu.be/W3gAzLwfIP0?si=b7KxNgQduwsQ-sth
-* 
-* 
-* @author Alex Wills
-* @date started Feb 15, 2024
-* @date edited Feb 16, 2024
-*/
-
-static void GLClearError()
-{
-    while (glGetError() != GL_NO_ERROR);
-}
-
-static bool GLLogCall(const char* function, const char* file, int line)
-{
-    while (GLenum error = glGetError())
-    {
-        std::cout << "[OpenGL Error] (0x" << std::hex << error << "): " <<
-            function << " " << file << ": "<< line << std::endl;
-        return false;
-    }
-    return true;
-}
-
+#include "GLErrorManager.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
+#include "Display.h"
+#include "VertexArrayObject.h"
 
 struct ShaderProgramSource {
     std::string VertexSource;
@@ -131,31 +102,7 @@ static unsigned int CreateShader(const std::string& vertexShader, const std::str
 
 int main(void)
 {
-    GLFWwindow* window;
-
-    /* Initialize the library */
-    if (!glfwInit())
-        return -1;
-
-    // Use OpenGL 3.3 with the CORE profile
-    //  CORE - multiple VAOs
-    //  COMPATABILITY (COMPAT) - single global default VAO
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-    if (!window)
-    {
-        glfwTerminate();
-        return -1;
-    }
-
-    /* Make the window's context current */
-    glfwMakeContextCurrent(window);
-
-    glfwSwapInterval(1);    // Synchronize frame updates with V sync
+    Display window;
 
     /* Initialize GLEW */
     GLenum err = glewInit();
@@ -187,33 +134,21 @@ int main(void)
         2, 3, 0
     };   // Now to send this to the GUP, we need a vertex buffer
 
+    // Create vertex buffer
+    VertexBuffer vertBuffer(positions, 4 * 2 * sizeof(float));
+    // Set up Vertex Array Object
+    VertexArrayObject va;
 
-    // Before making buffers, lets set up the VAO (Vertex Array Object)
-    unsigned int vao;
-    GLCall(glGenVertexArrays(1, &vao));
-    GLCall(glBindVertexArray(vao));
+    // Connect the vertex buffer with a layout
+    VertexBufferLayout layout;
+    layout.Push<float>(2);
+    va.AddBuffer(vertBuffer, layout);
+
+    // Index buffer object (ibo) connects to active VAO
+    IndexBuffer indexBuffer(indices, 6);
 
 
-    // Create buffer
-    unsigned int buffer;
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);  // 'Select' the buffer to modify
 
-    // index: This attribute will be index 0
-    // size: The attribute has 2 components (x, y)
-    // type: It will be defined as floats
-    // normalized: We do not want to normalize the values
-    // stride: to get from one vertex to the next, this is the size to jump (2 floats)
-    // pointer: now that we are in the vertex, we offset 0 bytes to get to the beginning of this attribute
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
-    glEnableVertexAttribArray(0);   // Enable this attribute
-    glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW);    // Add data// Create buffer
-
-    // Index buffer object (ibo)
-    unsigned int ibo;
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);  // 'Select' the buffer to modify
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW);    // Add data
 
     // Parse the shader
     ShaderProgramSource sources = ParseShader("res/shaders/Basic.vert", "res/shaders/Basic.frag");
@@ -227,45 +162,18 @@ int main(void)
     // Set up animation of color
     float r = 0.0f;
     float increment = 0.05f;
-    
-
-    /* Why use Vertex Arrays?
-
-    // Unlink everything!! :(
-    GLCall(glUseProgram(0));
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
-    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
-    
-
-    // Rebind everything! :) this would happen every frame if we had multiple buffers/objects to render
-    GLCall(glUseProgram(shader));
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
-
-    // These 2 lines! the layout might have changed for different draws
-    GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
-    GLCall(glEnableVertexAttribArray(0));   
-    *
-    * Those last 2 lines are why we use vertex arrays; it binds the attribute layout to the vertex buffer
-    * Also, in the core OpenGL, Vertex arrays are a requirement
-    * 
-    * With VAO, you don't need to bind the buffer, or redefine the attribute pointer, or enable the attribute pointer
-    *    GLCall(glBindVertexArray(vao))
-    * 
-    * How does it connect?
-    * When you bind the buffer (both of them! vertex and index),
-    *   and when you create the attribute pointer,
-    *   it does those operations to the currently bound VAO
-    */
 
 
 
 
     /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
+    while (!window.WindowShouldClose())
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
+
+        va.Bind();
+        indexBuffer.Bind();
 
         GLCall(glUniform4f(location, r, 0.6f, 0.9f, 1.0f));
 
@@ -285,13 +193,8 @@ int main(void)
         GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
 
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
-
-        /* Poll for and process events */
-        glfwPollEvents();
+        window.EndFrame();
     }
 
-    glfwTerminate();
     return 0;
 }
