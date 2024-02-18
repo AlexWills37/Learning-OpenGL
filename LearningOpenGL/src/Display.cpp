@@ -19,7 +19,7 @@ Display::Display()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode m_Window and its OpenGL context */
-    m_Window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    m_Window = glfwCreateWindow(960, 540, "Hello World", NULL, NULL);
     if (!m_Window)
     {
         glfwTerminate();
@@ -30,6 +30,10 @@ Display::Display()
     glfwMakeContextCurrent(m_Window);
 
     glfwSwapInterval(1);    // Synchronize frame updates with V sync
+
+    // How OpenGL handles writing to a pixel that already has a color value
+    GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+    GLCall(glEnable(GL_BLEND));
 }
 
 

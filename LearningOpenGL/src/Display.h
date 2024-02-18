@@ -30,4 +30,6 @@ public:
 
 	bool WindowShouldClose();
 	void EndFrame();
+
+	inline GLFWwindow* GetWindow() { return m_Window; }
 };
