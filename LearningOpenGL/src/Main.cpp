@@ -45,10 +45,10 @@ int main(void)
 
     // verticies
     float positions[] = {
-        -0.5f, -0.5f, 0.0f, 0.0f,   // 0 
-         0.5f, -0.5f, 1.0f, 0.0f,  // 1
-         0.5f,  0.5f, 1.0f, 1.0f,  // 2
-        -0.5f,  0.5f, 0.0f, 1.0f  // 3
+        -50.0f, -50.0f, 0.0f, 0.0f,   // 0 
+         50.0f, -50.0f, 1.0f, 0.0f,  // 1
+         50.0f,  50.0f, 1.0f, 1.0f,  // 2
+        -50.0f,  50.0f, 0.0f, 1.0f  // 3
     };
     
     // Index buffer to avoid duplicating verticies
@@ -75,9 +75,9 @@ int main(void)
     IndexBuffer indexBuffer(indices, 6);
 
     // Projection matrix
-    glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+    glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
     // Camera matrix
-    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(1, 0, 0));
+    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
 
 //    // Model matrix
 //    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(-2, 0.5f, 0));
@@ -107,7 +107,8 @@ int main(void)
 
     ImGui_ImplOpenGL3_Init("#version 130");
 
-    glm::vec3 translation(-2, 0.5f, 0);
+    glm::vec3 translationA(200, 0, 0);
+    glm::vec3 translationB(400, 0, 0);
 
 
     // Set up animation of color
@@ -128,7 +129,8 @@ int main(void)
         // ImGui window
         ImGui::Begin("Debug");
 
-        ImGui::SliderFloat3("Translation", &translation.x, -2.0f, 2.0f);
+        ImGui::SliderFloat3("Translation A", &translationA.x, 0.0f, 1000.0f);
+        ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 1000.0f);
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
         ImGui::End();
@@ -136,14 +138,23 @@ int main(void)
 
         // Change uniforms
         // Model matrix
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
-        glm::mat4 mvp = proj * view * model;
 
-        shader.Bind();
-        shader.SetUniform4f("u_Color", r, 0.6f, 0.9f, 1.0f);
-        shader.SetUniformMat4f("u_MVP", mvp);
+        {
+            glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);
+            glm::mat4 mvp = proj * view * model;
+            shader.Bind();
+            shader.SetUniformMat4f("u_MVP", mvp);
+            renderer.Draw(va, indexBuffer, shader);
+        }
+        
+        {
+            glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB);
+            glm::mat4 mvp = proj * view * model;
+            shader.SetUniformMat4f("u_MVP", mvp);
+            renderer.Draw(va, indexBuffer, shader);
+        }
 
-        renderer.Draw(va, indexBuffer, shader);
+
 
         // animation
         if (r > 1.0f)
