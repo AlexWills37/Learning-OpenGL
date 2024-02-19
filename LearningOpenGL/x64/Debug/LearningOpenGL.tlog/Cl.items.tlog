@@ -4,6 +4,9 @@ C:\Users\alexa\OneDrive\Documents\Projects\Learning-OpenGL\LearningOpenGL\src\In
 C:\Users\alexa\OneDrive\Documents\Projects\Learning-OpenGL\LearningOpenGL\src\Main.cpp;C:\Users\alexa\OneDrive\Documents\Projects\Learning-OpenGL\LearningOpenGL\x64\Debug\Main.obj
 C:\Users\alexa\OneDrive\Documents\Projects\Learning-OpenGL\LearningOpenGL\src\Renderer.cpp;C:\Users\alexa\OneDrive\Documents\Projects\Learning-OpenGL\LearningOpenGL\x64\Debug\Renderer.obj
 C:\Users\alexa\OneDrive\Documents\Projects\Learning-OpenGL\LearningOpenGL\src\Shader.cpp;C:\Users\alexa\OneDrive\Documents\Projects\Learning-OpenGL\LearningOpenGL\x64\Debug\Shader.obj
+C:\Users\alexa\OneDrive\Documents\Projects\Learning-OpenGL\LearningOpenGL\src\tests\Test.cpp;C:\Users\alexa\OneDrive\Documents\Projects\Learning-OpenGL\LearningOpenGL\x64\Debug\Test.obj
+C:\Users\alexa\OneDrive\Documents\Projects\Learning-OpenGL\LearningOpenGL\src\tests\TestClearColor.cpp;C:\Users\alexa\OneDrive\Documents\Projects\Learning-OpenGL\LearningOpenGL\x64\Debug\TestClearColor.obj
+C:\Users\alexa\OneDrive\Documents\Projects\Learning-OpenGL\LearningOpenGL\src\tests\TestTexture2D.cpp;C:\Users\alexa\OneDrive\Documents\Projects\Learning-OpenGL\LearningOpenGL\x64\Debug\TestTexture2D.obj
 C:\Users\alexa\OneDrive\Documents\Projects\Learning-OpenGL\LearningOpenGL\src\Texture.cpp;C:\Users\alexa\OneDrive\Documents\Projects\Learning-OpenGL\LearningOpenGL\x64\Debug\Texture.obj
 C:\Users\alexa\OneDrive\Documents\Projects\Learning-OpenGL\LearningOpenGL\src\vendor\glm\detail\glm.cpp;C:\Users\alexa\OneDrive\Documents\Projects\Learning-OpenGL\LearningOpenGL\x64\Debug\glm.obj
 C:\Users\alexa\OneDrive\Documents\Projects\Learning-OpenGL\LearningOpenGL\src\vendor\imgui\imgui.cpp;C:\Users\alexa\OneDrive\Documents\Projects\Learning-OpenGL\LearningOpenGL\x64\Debug\imgui.obj
